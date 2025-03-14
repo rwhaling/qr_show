@@ -12,10 +12,10 @@ import { createSketch as createQrSketch5, numericParameterDefs as qrNumericParam
 import { createSketch as createQrSketch6, numericParameterDefs as qrNumericParameterDefs6, initParameterStore as initQrParameterStore6 } from "./broken_qr_1";
 import { createSketch as createQrSketch7, numericParameterDefs as qrNumericParameterDefs7, initParameterStore as initQrParameterStore7 } from "./sketch_qr_7";
 // Define sketch types for organization
-type SketchType = "default" | "crimson";
+type SketchType = "default" | "qr5" | "qr7" | "qr4" | "qr6" | "qr" | "qr2" | "crimson";
 
 // Create a global function to cycle sketches that can be called from outside React
-let cycleSketch: () => void = () => {};
+let cycleSketch: (targetSketch?: SketchType) => void = () => {};
 
 // Create a map of sketch configurations
 const sketchConfigs = {
@@ -89,6 +89,21 @@ const sketchConfigs = {
   // },
 };
 
+// Function to get sketch key by index (1-based)
+function getSketchKeyByIndex(index: number): SketchType {
+  const sketchKeys = Object.keys(sketchConfigs) as SketchType[];
+  // Ensure index is within bounds (1-based indexing for URL parameter)
+  const adjustedIndex = Math.max(1, Math.min(index, sketchKeys.length));
+  // Convert to 0-based for array access
+  return sketchKeys[adjustedIndex - 1];
+}
+
+// Function to get sketch index by key (1-based for URL)
+function getSketchIndexByKey(key: SketchType): number {
+  const sketchKeys = Object.keys(sketchConfigs) as SketchType[];
+  return sketchKeys.indexOf(key) + 1;
+}
+
 // Create initial parameter store
 let parameterStore = initParameterStore();
 let p5Instance: p5;
@@ -101,14 +116,43 @@ function main(rootElement: HTMLElement) {
 
 // Split the React component into two parts: Title and Controls
 function TitleComponent() {
-  const [sketchType, setSketchType] = useState<SketchType>("default");
+  const [sketchType, setSketchType] = useState<SketchType>(() => {
+    // Check URL parameters for initial sketch
+    const urlParams = new URLSearchParams(window.location.search);
+    const sketchParam = urlParams.get('n');
+    
+    if (sketchParam) {
+      const sketchIndex = parseInt(sketchParam, 10);
+      if (!isNaN(sketchIndex)) {
+        return getSketchKeyByIndex(sketchIndex);
+      }
+    }
+    
+    return "default";
+  });
   
   // Function to cycle to next sketch
-  const cycleToNextSketch = () => {
-    const sketchTypes = Object.keys(sketchConfigs) as SketchType[];
-    const currentIndex = sketchTypes.indexOf(sketchType);
-    const nextIndex = (currentIndex + 1) % sketchTypes.length;
-    setSketchType(sketchTypes[nextIndex]);
+  const cycleToNextSketch = (targetSketch?: SketchType) => {
+    if (targetSketch) {
+      // Set to specific sketch if provided
+      setSketchType(targetSketch);
+      
+      // Update URL parameter for the specific sketch
+      const url = new URL(window.location.href);
+      url.searchParams.set('n', String(getSketchIndexByKey(targetSketch)));
+      window.history.replaceState({}, '', url);
+    } else {
+      // Default behavior: cycle to next sketch
+      const sketchTypes = Object.keys(sketchConfigs) as SketchType[];
+      const currentIndex = sketchTypes.indexOf(sketchType);
+      const nextIndex = (currentIndex + 1) % sketchTypes.length;
+      setSketchType(sketchTypes[nextIndex]);
+      
+      // Update URL parameter when changing sketches
+      const url = new URL(window.location.href);
+      url.searchParams.set('n', String(getSketchIndexByKey(sketchTypes[nextIndex])));
+      window.history.replaceState({}, '', url);
+    }
   };
   
   // Assign the global function to our React component's function
@@ -197,6 +241,11 @@ function TestApp() {
     } else {
       url.searchParams.delete('debug');
     }
+    // Preserve the sketch number parameter if it exists
+    const currentN = new URLSearchParams(window.location.search).get('n');
+    if (currentN) {
+      url.searchParams.set('n', currentN);
+    }
     window.history.replaceState({}, '', url);
   }, [showParams]);
 
@@ -218,7 +267,7 @@ function TestApp() {
       {/* Add the next sketch button */}
       <button 
         className="next-sketch-button"
-        onClick={cycleSketch}
+        onClick={() => cycleSketch()}
       >
         Next Sketch
       </button>
@@ -234,7 +283,8 @@ function TestApp() {
               value={currentSketchType}
               onChange={(e) => {
                 const newType = e.target.value as SketchType;
-                cycleSketch(); // This will change the global sketch
+                // Use the updated cycleSketch function to set a specific sketch
+                cycleSketch(newType);
               }}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
