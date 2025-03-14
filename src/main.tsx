@@ -21,49 +21,49 @@ let cycleSketch: () => void = () => {};
 const sketchConfigs = {
   default: {
     name: "QR Code 1",
-    title: "this is a valid QR Code",
+    title: "this is a valid qr code",
     createSketch,
     parameterDefs: numericParameterDefs,
     initStore: initParameterStore
   },
   qr5: {
     name: "QR Code 2",
-    title: "this is a valid QR Code",
+    title: "this is a valid qr Code",
     createSketch: createQrSketch5,
     parameterDefs: qrNumericParameterDefs5,
     initStore: initQrParameterStore5
   },
   qr7: {
     name: "QR Code 3",
-    title: "this is a valid QR Code",
+    title: "this is a valid qr code",
     createSketch: createQrSketch7,
     parameterDefs: qrNumericParameterDefs7,
     initStore: initQrParameterStore7
   },
   qr4: {
     name: "QR Code 4",
-    title: "this is a valid QR Code",
+    title: "this is a valid qr code",
     createSketch: createQrSketch4,
     parameterDefs: qrNumericParameterDefs4,
     initStore: initQrParameterStore4
   },
   qr6: {
     name: "Broken QR Code 1",
-    title: "this is not a valid QR Code",
+    title: "this is not a valid qr code",
     createSketch: createQrSketch6,
     parameterDefs: qrNumericParameterDefs6,
     initStore: initQrParameterStore6
   },
   qr: {
     name: "Broken QR Code 2",
-    title: "this is not a valid QR Code",
+    title: "this is not a valid qr code",
     createSketch: createQrSketch,
     parameterDefs: qrNumericParameterDefs,
     initStore: initQrParameterStore
   },
   qr2: {
     name: "Broken QR Code 3",
-    title: "this is not a valid QR Code",
+    title: "this is not a valid qr code",
     createSketch: createQrSketch2,
     parameterDefs: qrNumericParameterDefs2,
     initStore: initQrParameterStore2
