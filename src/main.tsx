@@ -11,6 +11,8 @@ import { createSketch as createVoronoiSketch, numericParameterDefs as voronoiNum
 import { createSketch as createQrSketch5, numericParameterDefs as qrNumericParameterDefs5, initParameterStore as initQrParameterStore5 } from "./sketch_qr_5";
 import { createSketch as createQrSketch6, numericParameterDefs as qrNumericParameterDefs6, initParameterStore as initQrParameterStore6 } from "./broken_qr_1";
 import { createSketch as createQrSketch7, numericParameterDefs as qrNumericParameterDefs7, initParameterStore as initQrParameterStore7 } from "./sketch_qr_7";
+import { createSketch as createPrintCode1, numericParameterDefs as printCode1NumericParameterDefs, initParameterStore as initPrintCode1ParameterStore } from "./print_code_1";
+import { createSketch as createPrintCode2, numericParameterDefs as printCode2NumericParameterDefs, initParameterStore as initPrintCode2ParameterStore } from "./print_code_2";
 // Define sketch types for organization
 type SketchType = "default" | "qr5" | "qr7" | "qr4" | "qr6" | "qr" | "qr2" | "crimson";
 
@@ -74,6 +76,20 @@ const sketchConfigs = {
     createSketch: createCrimsonSketch,
     parameterDefs: crimsonNumericParameterDefs,
     initStore: initCrimsonParameterStore
+  },
+  print_1: {
+    name: "Print Code 1",
+    title: "this is a QR code for printing",
+    createSketch: createPrintCode1,
+    parameterDefs: printCode1NumericParameterDefs,
+    initStore: initPrintCode1ParameterStore
+  },
+  print_2: {
+    name: "Print Code 2",
+    title: "this is a QR code for printing",
+    createSketch: createPrintCode2,
+    parameterDefs: printCode2NumericParameterDefs,
+    initStore: initPrintCode2ParameterStore
   },
   // voronoi: {
   //   name: "Voronoi Flow Field",
